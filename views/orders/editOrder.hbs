@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css">
+  <title>Edit Order</title>
+  <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+  <style>
+    /* Overall container styling */
+    .border-effect {
+      border: 1px solid gray; /* Primary blue border */
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow effect */
+    }
+
+    /* Header styling */
+    .bg-secondary {
+      border-top-left-radius: 10px;
+      border-top-right-radius: 10px;
+    }
+
+    /* Order and Reporting sections */
+    .border-start-md {
+      border-left: 1px solid gray;
+    }
+
+    /* Input and form styling */
+    .form-control {
+      border: 1px solid #ced4da;
+      border-radius: 5px;
+      transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    }
+
+    .form-control:focus {
+      border-color: #0d6efd;
+      box-shadow: 0 0 5px rgba(13, 110, 253, 0.5);
+    }
+
+    /* Buttons */
+    .btn-primary {
+      box-shadow: 0 3px 6px rgba(0, 123, 255, 0.3);
+    }
+
+    .btn-danger {
+      box-shadow: 0 3px 6px rgba(220, 53, 69, 0.3);
+    }
+
+    /* Row separation */
+    .row {
+      margin-bottom: 1.5rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container mt-5 mb-3 border-effect">
+    <div class="bg-secondary p-2 text-white">
+      <h5>Edit Order</h5>
+    </div>
+    <div class="container mt-2 mb-2">
+      <form action="/orders/{{order._id}}?_method=PUT" method="POST">
+        <input type="hidden" name="_method" value="PUT">
+        <!-- Row for Order Section and Reporting Section -->
+        <div class="row">
+          <!-- Order Section -->
+          <div class="col-12 col-md-9 mb-4">
+            <h6 class="mb-3">Order Section</h6>
+            <div class="row mb-3">
+              <div class="col-12 col-md-6 mb-2">
+                <label for="tableId" class="form-label">Table</label>
+                <select name="tableId" class="form-control" required>
+                  {{#each tables}}
+                      <option value="{{this._id}}" {{#if (eq this._id ../order.tableId)}}selected{{/if}}>
+                      {{this.tableName}}
+                      </option>
+                   {{/each}}
+                </select>
+              </div>
+
+                
+
+
+              <div class="col-12 col-md-6">
+                <label for="customerName" class="form-label">Customer Name</label>
+                <input type="text" name="customerName" class="form-control" value="{{order.customerName}}">
+              </div>
+            </div>
+            <div class="row mb-3">
+              <div class="col-12 col-md-6">
+                <label for="customerPhone" class="form-label">Phone</label>
+                <input type="text" name="customerPhone" class="form-control" value="{{order.customerPhone}}">
+              </div>
+              <div class="col-12 col-md-6">
+                <label for="email" class="form-label">Email</label>
+                <input type="email" name="email" class="form-control" value="{{order.email}}">
+              </div>
+            </div>
+
+<!-- Dynamic Product Rows -->
+  <div id="productRows">
+  {{#each order.products}}
+  <div class="row mb-3 product-row">
+    <div class="col-12 col-md-5 mb-2">
+      <label for="productId" class="form-label">Product</label>
+      <select name="productId[]" class="form-control productId">
+        <option value="">Select Product</option>
+        {{#each ../products}}
+          <option value="{{this._id}}" data-price="{{this.price}}" {{#if (eq this._id ../productId._id)}}selected{{/if}}>
+            {{this.productName}}
+          </option>
+        {{/each}}
+      </select>
+    </div>
+    <div class="col-6 col-md-2 mb-2">
+      <label for="qty" class="form-label">Qty</label>
+      <input type="number" name="qty[]" class="form-control qty" value="{{qty}}" min="1">
+    </div>
+    <div class="col-6 col-md-2 mb-2">
+      <label for="rate" class="form-label">Rate</label>
+      <input type="text" name="rate[]" class="form-control rate" value="{{rate}}" readonly>
+    </div>
+    <div class="col-12 col-md-2">
+      <label for="amount" class="form-label">Amount</label>
+      <input type="text" name="amount[]" class="form-control amount" value="{{amount}}" readonly>
+    </div>
+    <div class="col-12 col-md-1 d-flex align-items-end">
+      <button type="button" class="btn btn-primary add-row">+</button>
+   </div>
+  </div>
+   
+{{/each}}
+</div>
+
+
+            <div class="row mb-3">
+              <div class="col-12">
+                <label for="description" class="form-label">Description</label>
+                <textarea name="description" class="form-control">{{order.description}}</textarea>
+              </div>
+            </div>
+          </div>
+
+          <!-- Reporting Section -->
+          <div class="col-12 col-md-3 border-start-md">
+            <h6 class="mb-3">Reporting Section</h6>
+            <div class="row mb-3">
+              <div class="col-12 d-flex">
+                <label for="grossAmount" class="form-label me-2" style="width: 150px;">Gross Amount</label>
+                <input type="text" name="grossAmount" class="form-control" value="{{order.grossAmount}}" readonly>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <div class="col-12 d-flex">
+                <label for="taxAmount" class="form-label me-2" style="width: 150px;">Tax %</label>
+                <input type="number" name="taxAmount" class="form-control" value="{{order.taxAmount}}">
+              </div>
+            </div>
+            <div class="row mb-3">
+              <div class="col-12 d-flex">
+                <label for="discount" class="form-label me-2" style="width: 150px;">Discount</label>
+                <input type="text" name="discount" class="form-control" value="{{order.discount}}">
+              </div>
+            </div>
+
+            <div class="row mb-3">
+              <div class="col-12 d-flex">
+                <label for="netAmount" class="form-label me-2" style="width: 150px;">Net Amount</label>
+                <input type="text" name="netAmount" class="form-control" value="{{order.netAmount}}" readonly>
+              </div>
+            </div>
+
+
+        <div class="row mb-3">
+              <div class="col-12 d-flex">
+                <label for="orderstatusId" class="form-label" style="width: 150px;">Status</label>
+                 <select name="orderstatusId" class="form-control" required>
+                  {{#each orderstatus}}
+                      <option value="{{this._id}}" {{#if (eq this._id ../order.orderstatusId)}}selected{{/if}}>
+                      {{this.statusName}}
+                      </option>
+                   {{/each}}
+                </select>
+              </div>
+          </div>
+          
+
+            <!-- Submit and Cancel Buttons -->
+            <div class="row mt-4">
+              <div class="col-12 text-center">
+                <button type="submit" class="btn btn-success">Update Order</button>
+                <a href="/orders" class="btn btn-secondary">Cancel</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+    <script>
+    // Function to add a new product row
+    $(document).on('click', '.add-row', function() {
+      const newRow = `
+        <div class="row mb-3 product-row">
+          <div class="col-12 col-md-5 mb-2">
+            <select name="productId[]" class="form-control productId">
+              <option value="">Select Product</option>
+              {{#each products}}
+                <option value="{{this._id}}" data-price="{{this.price}}">{{this.productName}}</option>
+              {{/each}}
+            </select>
+          </div>
+          <div class="col-6 col-md-2 mb-2">
+            <input type="number" name="qty[]" class="form-control qty" value="1" min="1">
+          </div>
+          <div class="col-6 col-md-2 mb-2">
+            <input type="text" name="rate[]" class="form-control rate" readonly>
+          </div>
+          <div class="col-12 col-md-2">
+            <input type="text" name="amount[]" class="form-control amount" readonly>
+          </div>
+          <div class="col-12 col-md-1 d-flex align-items-end">
+            <button type="button" class="btn btn-danger remove-row">-</button>
+          </div>
+        </div>`;
+      $('#productRows').append(newRow);
+    });
+
+    // Function to remove a product row
+    $(document).on('click', '.remove-row', function() {
+      $(this).closest('.product-row').remove();
+    });
+
+
+
+
+
+// Function to update rate, amount, and gross amount immediately when product or quantity changes
+$(document).on('change', '.productId', function() {
+  const row = $(this).closest('.product-row');
+  const price = parseFloat($(this).find('option:selected').data('price')) || 0;  // Get the price from the selected option
+  const qty = parseInt(row.find('.qty').val()) || 1;  // Get the quantity value
+  const amount = price * qty;  // Calculate amount
+
+  // Update the rate and amount fields in the row
+  row.find('.rate').val(price.toFixed(2));  // Update the rate field
+  row.find('.amount').val(amount.toFixed(2));  // Update the amount field
+
+  // Update the gross amount
+  updateGrossAmount();
+  updateNetAmount();
+});
+ 
+
+$(document).on('input', '.qty', function() {
+  const row = $(this).closest('.product-row');
+  const price = parseFloat(row.find('.productId option:selected').data('price')) || 0;  // Get the price from the selected product
+  const qty = parseInt($(this).val()) || 1;  // Get the quantity value
+  const amount = price * qty;  // Calculate the amount for the row
+  // Update the amount field in the row
+  row.find('.amount').val(amount.toFixed(2));  // Update the amount field
+  // Update the gross amount
+  updateGrossAmount();
+  updateNetAmount();
+}); 
+
+
+
+// Function to update the gross amount by summing all the individual amounts
+function updateGrossAmount() {
+  let totalAmount = 0;
+  // Loop through all the amount fields and calculate the total
+  $('.amount').each(function() {
+    const amount = parseFloat($(this).val()) || 0;  // Ensure it's a number, default to 0 if empty
+    totalAmount += amount;
+  });
+  // Update the grossAmount input field with the total
+  $('[name="grossAmount"]').val(totalAmount.toFixed(2));  // Format to 2 decimal places
+}
+
+// Function to remove a product row and update gross amount
+$(document).on('click', '.remove-row', function() {
+  const row = $(this).closest('.product-row');
+  const amountToRemove = parseFloat(row.find('.amount').val()) || 0;  // Get the amount of the row being removed
+  // Remove the product row
+  row.remove();
+  // Update the gross amount after removing the row
+  updateGrossAmount();
+  updateNetAmount();
+});
+
+
+// Function to update net amount dynamically
+function updateNetAmount() {
+  const grossAmount = parseFloat($('[name="grossAmount"]').val()) || 0;
+  const taxPercent = parseFloat($('[name="taxAmount"]').val()) || 0;
+  const discount = parseFloat($('[name="discount"]').val()) || 0;
+  const taxAmount = (taxPercent / 100) * grossAmount;
+  const totalBeforeDiscount = grossAmount + taxAmount;
+  const netAmount = totalBeforeDiscount - discount;
+  // Update the netAmount field
+  $('[name="netAmount"]').val(netAmount.toFixed(2));
+}
+// Attach event listeners to input fields
+$(document).on('input', '[name="taxAmount"], [name="discount"], [name="grossAmount"]', updateNetAmount);
+
+
+  </script>
+</body>
+</html>
