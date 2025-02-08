@@ -16,9 +16,13 @@ const Store=require('../models/store');
     const orders = await Order.find({})
       .populate('tableId', 'tableName') // populate table info
       .populate('orderstatusId','statusName')
-      .populate('products.productId', 'productName'); // populate productName inside products
-     
-    res.render('./orders/orderList', { orders });
+      .populate('products.productId', 'productName');// populate productName inside products
+
+      
+    res.render('./components/orders/orderList', { orders, 
+      title: 'ORDER LIST',  // Passing the title for the page
+      orders: orders       // Passing the order data to the view
+     });
   } catch (err) {
     console.error(err);
     res.status(500).send('Error fetching orders');
@@ -40,7 +44,7 @@ router.get('/orders/add', async (req, res) => {
   try {
     const tables = await Table.find({tablestatusId:availableTable._id,storeId:store._id});
     const products = await Product.find();
-    res.render('orders/addOrder', { tables, products });
+    res.render('components/orders/addOrder', { tables, products });
   } catch (err) {
     console.error('Error fetching tables/products:', err);
     res.status(500).send('Error fetching data for order creation');
@@ -123,12 +127,28 @@ router.post('/orders', async (req, res) => {
 
 // Edit Order Routing
 router.get('/orders/edit/:id', async (req, res) => {
+
+  const availableTable = await Tablestatus.findOne({ statusName: 'Available' });
+  if (!availableTable) {
+    throw new Error('Available Table not found in the database');
+  }
+  const store = await Store.findOne({ storeName: 'Sunshine Cafe' });
+  if (!store) {
+    throw new Error(' Store not found in the database');
+  }
   try {
     const order = await Order.findById(req.params.id).populate('products.productId');
     const products = await Product.find({});
-    const tables = await Table.find({});
+    const tables = await Table.find({
+      $or: [
+        { _id: order.tableId }, // Include the currently selected table
+        { tablestatusId: availableTable._id, storeId: store._id } // Include available tables
+      ]
+    });
+    // const tables = await Table.find({tablestatusId:availableTable._id,storeId:store._id});
+
     const orderstatus= await Orderstatus.find({});
-    res.render('./orders/editOrder', { order, products,orderstatus,tables });
+    res.render('./components/orders/editOrder', { order, products,orderstatus,tables });
   } catch (err) {
     console.error(err);
     req.flash('errorMessage', 'Error loading the order details');

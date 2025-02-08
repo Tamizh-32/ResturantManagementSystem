@@ -21,7 +21,10 @@ router.get('/products', async (req, res) => {
     const product = await Product.find({})
     .populate('categoryId', 'categoryName') // Populate categoryId with categoryName
     .populate('storeId', 'storeName');     // Populate storeId with storeName
-    res.render('./products/productList', { product });
+    res.render('./components/products/productList', { product ,
+      title: 'MENUS LIST',
+      product: product       // Passing the PRODUCT data to the view
+    });
   } catch (err) {
     console.error('Error fetching products:', err);
     res.status(500).send('Internal Server Error');
@@ -33,7 +36,7 @@ router.get('/products/add', async (req, res) => {
   try {
     const stores = await Store.find({}); // Fetch all stores
     const categories = await Category.find({}); // Fetch all categories
-    res.render('./products/addProduct', { stores, categories }); // Pass both datasets to the template
+    res.render('./components/products/addProduct', { stores, categories }); // Pass both datasets to the template
   } catch (err) {
     console.error('Error fetching stores or categories:', err);
     res.status(500).send('Internal Server Error');
@@ -61,7 +64,7 @@ router.get('/products/edit/:id', async (req, res) => {
       const product = await Product.findById(req.params.id);
       const stores = await Store.find({}); // Fetch all stores
       const categories = await Category.find({}); // Fetch all categories
-      res.render('./products/editProduct', { product, stores, categories });
+      res.render('./components/products/editProduct', { product, stores, categories });
     } catch (err) {
       console.error('Error fetching product, stores, or categories:', err);
       res.status(500).send('Internal Server Error');

@@ -1,0 +1,202 @@
+/* Sidebar fixed style */
+#sidebarMenu {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 250px; /* Sidebar width */
+  overflow-y: auto;
+  color: white;
+}
+
+/* Adjust body padding for sidebar */
+body {
+  padding-left: 250px; /* Adjust to match sidebar width */
+}
+
+/* Responsive Sidebar - Hide sidebar on small screens */
+@media (max-width: 768px) {
+  #sidebarMenu {
+      position: fixed;
+      left: -250px;
+      width: 250px;
+      height: 100vh;
+      transition: left 0.3s ease-in-out;
+  }
+  body {
+      padding-left: 0;
+  }
+  #sidebarMenu.open {
+      left: 0;
+  }
+}
+
+/* Responsive Table */
+.table-container {
+  width: 100%;
+  overflow-x: auto; /* Enables horizontal scrolling */
+}
+
+table {
+  width: 100%;
+  table-layout: auto; /* Auto adjust columns based on content */
+  border-collapse: collapse;
+}
+
+/* Table Header */
+th {
+  text-align: center;
+  background: #f8f9fa;
+  padding: 10px;
+}
+
+/* Padding for table cells */
+th, td {
+  padding: 10px;
+  text-align: center;
+}
+
+/* Address & Description column adjustments */
+td.address-column, th.address-column,
+td.description-column, th.description-column {
+  max-width: 300px;
+  word-wrap: break-word;
+  white-space: normal;
+}
+
+/* Responsive Table for Small Screens */
+@media (max-width: 768px) {
+  .table thead {
+    display: none; /* Hide table headers on small screens */
+  }
+
+  .table tbody tr {
+    display: block;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    padding: 10px;
+    background: #f8f9fa;
+    border-radius: 10px;
+  }
+
+  .table tbody td {
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+    padding: 8px;
+    border-bottom: 1px solid #ddd;
+  }
+
+  .table tbody td:last-child {
+    border-bottom: none;
+  }
+
+  .table tbody td::before {
+    content: attr(data-label); /* Show column names */
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 5px; /* Space between label and value */
+    display: inline-block;
+  }
+}
+
+/* Form Container */
+.form-container {
+  max-width: 600px;
+  margin: auto;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  background: white;
+}
+
+/* Responsive Form */
+@media (max-width: 576px) {
+  .form-container {
+      max-width: 100%;
+      padding: 15px;
+  }
+
+  .btn {
+      width: 100%;
+      margin-bottom: 10px; /* Space between buttons */
+  }
+}
+
+/* Button Styling */
+.btn {
+  font-size: 16px;
+  padding: 8px 12px;
+  border-radius: 5px;
+}
+
+.btn-sm {
+  padding: 5px 8px;
+  font-size: 14px;
+}
+
+/* Input fields */
+.form-control {
+  border: 1px solid #ced4da;
+  border-radius: 5px;
+  transition: all 0.3s ease-in-out;
+}
+
+.form-control:focus {
+  border-color: #0d6efd;
+  box-shadow: 0 0 5px rgba(13, 110, 253, 0.5);
+}
+
+/* Border Effects for Form */
+.border-effect {
+  border: 1px solid gray;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Adjust button alignment in mobile */
+@media (max-width: 576px) {
+  .btn-sm {
+      width: 100%;
+      margin-bottom: 5px;
+  }
+}
+
+/* Responsive Form */
+@media (max-width: 576px) {
+  .mobile-stack {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .mobile-stack h5 {
+    text-align: center;
+  
+  }
+  .mobile-stack .form-control {
+    width: 100%;
+    margin-bottom: 10px;
+  }
+  .mobile-stack .btn {
+    width: 100%;
+  }
+}
+
+
+/* Responsive Table */
+.table-container {
+  width: 100%;
+  overflow-x: auto; /* Enables horizontal scrolling */
+}
+
+table {
+  width: 100%;
+  table-layout: auto; /* Auto adjust columns based on content */
+  border-collapse: collapse;
+}
+
+@media (min-width: 768px) {
+  .table-container {
+    overflow-x: auto;
+  }
+
+}

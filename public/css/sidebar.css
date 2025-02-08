@@ -1,0 +1,86 @@
+/* General Styles */
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background-color: #f9f9f9;
+  padding-top: 58px; /* Prevents content from hiding under the navbar */
+}
+
+/* Sidebar Styles */
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: -240px; /* Hidden by default */
+  height: 100%;
+  width: 240px;
+  background: #fff;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+  z-index: 999; /* Below the navbar */
+  transition: left 0.3s ease-in-out;
+  overflow-y: auto;
+  padding-top: 60px; /* To align content below navbar */
+}
+
+.sidebar.open {
+  left: 0; /* Shows the sidebar */
+}
+
+.list-group-item {
+  padding: 15px 20px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+#mainContent {
+  padding: 20px;
+  transition: margin-left 0.3s ease-in-out;
+}
+
+.sidebar.open + #mainContent {
+  margin-left: 240px; /* Moves content when sidebar is open */
+}
+
+/* Navbar Styles */
+.navbar {
+  height: 58px;
+  padding: 0 15px;
+  background-color: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  z-index: 1000; /* Higher than the sidebar */
+  display: flex;
+  align-items: center;
+}
+
+/* Hide toggle button by default (for laptops/desktops) */
+#sidebarToggle {
+  display: none;
+}
+
+/* Responsive Styles */
+@media (max-width: 991.98px) {
+  .sidebar {
+    width: 100%;
+    left: -100%; /* Completely hidden */
+  }
+
+  .sidebar.open {
+    left: 0; /* Slide-in effect */
+  }
+
+  .sidebar.open + #mainContent {
+    margin-left: 0;
+  }
+
+  /* Show toggle button for mobile and tablet view */
+  #sidebarToggle {
+    display: block;        /* Visible on mobile/tablet */
+    font-size: 18px;       /* Adjust icon size */
+    padding: 6px 10px;     /* Compact button size */
+    color: white;        /*  color for better visibility */
+    background: none;      
+    border: none;
+    cursor: pointer;
+  }
+
+
+}

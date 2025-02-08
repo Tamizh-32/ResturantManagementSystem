@@ -12,7 +12,10 @@ router.get('/tables',async (req, res) => {
    const tables = await Table.find({})
    .populate('storeId')
    .populate('tablestatusId');
-  res.render('./tables/tableList', { tables });
+  res.render('./components/tables/tableList', { tables,
+    title: 'TABLE LIST',
+    tables: tables       // Passing the tables data to the view
+   });
 })
 
 
@@ -22,7 +25,7 @@ router.get('/tables/add', async (req, res) => {
   try {
       const stores = await Store.find({});
       const tablestatus=await Tablestatus.find({});
-      res.render('./tables/addTable', { stores,tablestatus });
+      res.render('./components/tables/addTable', { stores,tablestatus });
   } catch (error) {
       console.error("Error fetching stores: ", error);
       res.status(500).send("An error occurred while fetching stores.");
@@ -52,7 +55,7 @@ router.post('/tables', async (req, res) => {
      const table = await Table.findById(req.params.id); // Fetch the table to be edited
      const stores = await Store.find({}); // Fetch all stores
      const tablestatus = await Tablestatus.find({});
-     res.render('./tables/editTable', { table, stores,tablestatus }); // Pass the data to the template
+     res.render('./components/tables/editTable', { table, stores,tablestatus }); // Pass the data to the template
    } catch (error) {
      console.error('Error fetching table or stores:', error);
      req.flash('error', 'Failed to load data for editing.');

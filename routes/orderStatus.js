@@ -7,7 +7,10 @@ const Store=require('../models/store');
 // List OrderStatus
 router.get('/orderstatus', async(req,res)=>{
         const orderStatus = await Orderstatus.find({}).populate('storeId')
-        res.render('./orderStatus/orderStatusList',{orderStatus});
+        res.render('./components/orderStatus/orderStatusList',{orderStatus,
+            title: 'ORDER STATUS LIST',
+            orderStatus: orderStatus       // Passing the order data to the view
+        });
 })
 
 // Add Order Status  Routing
@@ -15,7 +18,7 @@ router.get('/orderstatus', async(req,res)=>{
 router.get('/orderstatus/add',async(req,res)=>{
     try {
         const store = await Store.find({});
-        res.render('./orderStatus/addOrderStatus',{store});  
+        res.render('./components/orderStatus/addOrderStatus',{store});  
     } catch (error) {
         console.error("Error fetching stores: ", error);
         res.status(500).send("An error occurred while fetching stores.");
@@ -41,7 +44,7 @@ router.post('/orderstatus', async(req,res)=>{
 router.get('/orderstatus/edit/:id',async(req,res)=>{
     const orderstatus = await Orderstatus.findById(req.params.id);
     const stores = await Store.find({}); // Fetch all stores
-    res.render('./orderStatus/editOrderStatus',{orderstatus, stores});
+    res.render('./components/orderStatus/editOrderStatus',{orderstatus, stores});
 });
 
 

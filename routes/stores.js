@@ -10,13 +10,16 @@ const flash=require('connect-flash');
 router.get('/stores',async (req, res) => {
     const stores = await Store.find({});  
     // console.log("Stores: ",stores);
-   res.render('./stores/storeList', { stores });
+   res.render('./components/stores/storeList', { stores,
+    title: 'STORE LIST',
+    stores: stores       // Passing the stores data to the view
+    });
 })
 
 
 // Add store routing
 router.get('/stores/add',(req, res) => {
-    res.render('./stores/addStore');
+    res.render('./components/stores/addStore');
  })
 
 
@@ -38,7 +41,7 @@ router.post('/stores', async (req, res) => {
  // Edit store
 router.get('/stores/edit/:id',async(req, res) => {
   const store = await Store.findById(req.params.id);
-    res.render('./stores/editStore',{store});
+    res.render('./components/stores/editStore',{store});
  })
 
  // Edit Store (Put request)

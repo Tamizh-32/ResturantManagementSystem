@@ -7,13 +7,17 @@ const router=express.Router();
 // List Company 
 router.get('/companyinfo',async(req,res)=>{
     const companyinfo = await CompanyInfo.find({});
-    res.render('./companyInfo/companyInfoList',{companyinfo});
+    res.render('./components/companyInfo/companyInfoList',{companyinfo ,       
+         title: 'COMPANY INFO LIST',  // Passing the title for the page
+        companyinfo: companyinfo       // Passing the category data to the view
+});
+
 });
 
 
 // Add Company Routing
 router.get('/companyinfo/add',(req,res)=>{
-    res.render('./companyInfo/addCompanyInfo');
+    res.render('./components/companyInfo/addCompanyInfo');
 });
 
 // Add Company POST
@@ -36,8 +40,7 @@ router.post('/companyinfo',async(req,res)=>{
 
 router.get('/companyinfo/edit:id',async(req,res)=>{
     const companyinfo= await CompanyInfo.findById(req.params.id);
-    console.log(companyinfo);
-    res.render('./companyInfo/editCompanyInfo',{companyinfo});
+    res.render('./components/companyInfo/editCompanyInfo',{companyinfo});
 })
 
 // Edit Company Info PUT
@@ -51,7 +54,7 @@ router.put('/companyinfo/:id',async(req,res)=>{
     } catch (err) {
         console.error('Error Message:',err);
         req.flash('errorMessage','Failed to Update CompanyInfo, Please Try Again!')
-        res.redirect('./companyInfo/editCompanyInfo');
+        res.redirect('./components/companyInfo/editCompanyInfo');
     }
 });
 

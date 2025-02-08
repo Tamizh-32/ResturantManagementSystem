@@ -8,7 +8,10 @@ const flash = require('connect-flash');
 // List Users Routing
 router.get('/users', async (req, res) => {
     const users = await User.find({}).populate('storeId');
-    res.render('./users/userList', { users });
+    res.render('./components/users/userList', { users ,
+        title: 'USERS LIST',
+        users: users       // Passing the users data to the view
+    });
 });
 
 // Add User Routing
@@ -16,7 +19,7 @@ router.get('/users/add', async (req, res) => {
     try {
         const stores = await Store.find({});
         // console.log("Stores: ", stores);
-        res.render('./users/addUser', { stores });
+        res.render('./components/users/addUser', { stores });
     } catch (error) {
         console.error("Error fetching stores: ", error);
         res.status(500).send("An error occurred while fetching stores.");
@@ -59,7 +62,7 @@ router.get('/users/edit/:id',async(req, res)=> {
     try {
         const user= await User.findById(req.params.id);
         const stores=await Store.find({});
-        res.render('./users/editUser',{user,stores});
+        res.render('./components/users/editUser',{user,stores});
     } catch (error) {
         console.error('Error fetching user or stores:', error);
         req.flash('error', 'Failed to load data for editing.');
