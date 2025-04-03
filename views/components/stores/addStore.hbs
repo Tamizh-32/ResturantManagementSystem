@@ -5,8 +5,10 @@
   <title>Add Store</title>
   
   <link rel="stylesheet" href="/css/style.css">
+      <script src="/js/validation.js" defer></script>
 </head>
 <body>
+      {{> navbar}}
   {{> sidebar}}
   <div class="container  mb-3 col col-lg-6 border  border-effect" >
      <div  class="bg-secondary p-2 text-white ">
@@ -14,18 +16,22 @@
     </div>
   <div class="container mt-2 mb-2">
    
-    <form class="" action="/stores" method="POST" >
+    <form  action="/stores" method="POST" class="needs-validation" novalidate>
       <div class="mb-2">
         <label for="name" class="form-label">Store Name</label>
         <input type="text" name="storeName" class="form-control" required>
+        <span class="text-danger" style="display: none;"></span> <!-- Error message -->
       </div>
       <div class="mb-2">
-    <label for="status" class="form-label">Status</label>
-    <select name="status" class="form-control" required>
-        <option value="active">Active</option>
-        <option value="inactive">Inactive</option>
-    </select>
-</div>
+          <label for="status" class="form-label">Status</label>
+          <select name="status" class="form-control" required>
+            <option value="">Select Status</option>
+            {{#each activeEnum}}
+              <option value="{{this}}">{{this}}</option>
+            {{/each}}
+          </select>
+          <span class="text-danger" style="display: none;"></span> <!-- Error message -->
+        </div>
     <br>
       <button type="submit" class="btn btn-success">Save</button>
         <a href="/stores" class="btn btn-secondary">Cancel</a>

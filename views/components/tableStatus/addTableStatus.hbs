@@ -5,9 +5,10 @@
   <title>Add Table Status</title>
   
   <link rel="stylesheet" href="/css/style.css">
+      <script src="/js/validation.js" defer></script>
 </head>
 <body>
-
+    {{> navbar}}
   {{> sidebar}}
   <div class="container  mb-3 col col-lg-6 border  border-effect" >
      <div  class="bg-secondary p-2 text-white ">
@@ -15,19 +16,23 @@
     </div>
   <div class="container mt-2 mb-2">
    
-    <form class="" action="/tablestatus" method="POST" >
+    <form  action="/tablestatus" method="POST" class="needs-validation" novalidate>
       <div class="mb-2">
         <label for="statusName" class="form-label">Status Name</label>
         <input type="text" name="statusName" class="form-control" required>
+        <span class="text-danger" style="display: none;"></span> <!-- Error message -->
       </div>
       
-   <div class="mb-2">
-          <label for="storeId" class="form-label">Store Id</label>
-          <select name="storeId" class="form-control" required>
-            {{#each store}}
-              <option value="{{this._id}}">{{this.storeName}}</option>
+   
+         <div class="mb-2">
+          <label for="status" class="form-label">Status</label>
+          <select name="status" class="form-control" required>
+            <option value="">Select Status</option>
+            {{#each activeEnum}}
+              <option value="{{this}}">{{this}}</option>
             {{/each}}
           </select>
+          <span class="text-danger" style="display: none;"></span> <!-- Error message -->
         </div>
     <br>
       <button type="submit" class="btn btn-success">Save</button>
@@ -35,11 +40,12 @@
     </form>
   </div>
   </div>
+
 </body>
 </html>
 
 
-
+  
 
 
 

@@ -7,6 +7,7 @@
       <script src="../js/search.js"></script>
 </head>
 <body>
+      {{> navbar}}
   {{> sidebar}}
   <div class="container">
    
@@ -16,6 +17,7 @@
           <input type="text"  class="form-control" id="searchInput" onkeyup="filterTable()" placeholder="Search for names..">
       </div>
       <div class=" me-2">
+        
       <a href="/tables/add" class="btn btn-primary">Add Table</a>
       </div>
     </div>
@@ -28,8 +30,9 @@
           <th>S.no</th>
           <th>Table No</th>
           <th>Capacity</th>
-          <th>Status</th>
+          <th>Table Status</th>
           <th>Store Name</th>
+          <th>Status</th>
           <th>Actions</th>
         </tr>
       </thead>
@@ -41,6 +44,7 @@
           <td data-label="Capacity">{{this.capacity}}</td>
           <td data-label="Status">{{this.tablestatusId.statusName}}</td>
          <td data-label="Store Name">{{this.storeId.storeName}}</td>
+         <td data-label="Status">{{this.status}}</td>
           <td data-label="Actions">
             <a href="/tables/edit/{{this._id}}" class="btn btn-warning btn-sm">Edit</a>
             <form action="/tables/{{this._id}}?_method=DELETE" method="POST" class="d-inline">

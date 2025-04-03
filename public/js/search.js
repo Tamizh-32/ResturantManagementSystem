@@ -68,6 +68,9 @@ document.addEventListener("DOMContentLoaded", function () {
         pagination.appendChild(paginationList);
     }
 
+
+
+    
     function filterTable() {
         let input = document.getElementById("searchInput");
         let filter = input.value.toUpperCase();

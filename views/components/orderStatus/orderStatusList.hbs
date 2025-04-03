@@ -7,6 +7,7 @@
       <script src="../js/search.js"></script>
 </head>
 <body>
+      {{> navbar}}
   {{> sidebar}}
   <div class="container">
    
@@ -26,6 +27,7 @@
           <th>S.no</th>
           <th>Status Name</th>
           <th>Store Name</th>
+          <th>Status</th>
           <th>Actions</th>
         </tr>
       </thead>
@@ -35,9 +37,10 @@
           <td data-label="S.No">{{inc @index}}</td>
           <td data-label="Status Name">{{this.statusName}}</td>
          <td data-label="Store Name">{{this.storeId.storeName}}</td>
+         <td data-label="Status">{{this.status}}</td>
           <td data-label="Actions">
-            <a href="/orderStatus/edit/{{this._id}}" class="btn btn-warning btn-sm">Edit</a>
-            <form action="/orderStatus/{{this._id}}?_method=DELETE" method="POST" class="d-inline">
+            <a href="/orderstatus/edit/{{this._id}}" class="btn btn-warning btn-sm">Edit</a>
+            <form action="/orderstatus/{{this._id}}?_method=DELETE" method="POST" class="d-inline">
               <button type="submit" class="btn btn-danger btn-sm">Delete</button>
             </form>
           </td>

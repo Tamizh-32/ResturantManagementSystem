@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | RMS</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+    <script src="/js/validation.js" defer></script>
+    <style>
+        body,
+        html {
+            height: 100%;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #f8f9fa;
+        }
+
+        .login-container {
+            max-width: 400px;
+            width: 100%;
+            background: white;
+            padding: 20px;
+            margin-top: 100px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .error-message {
+            color: red;
+            font-size: 0.875em;
+            margin-top: 5px;
+        }
+
+        .position-relative {
+            position: relative;
+        }
+
+        .form-control.is-invalid {
+            background-image: none !important;
+        }
+
+        .eye-icon {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            margin-top: 15px;
+            transform: translateY(-50%);
+            cursor: pointer;
+            z-index: 2;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="login-container mt-5">
+        <h3 class="text-center mb-3">Login</h3>
+        {{#if error}}
+        <div class="alert alert-danger text-center">{{error}}</div>
+        {{/if}}
+
+        <form id="loginForm" action="/auth/login" method="POST">
+            <div class="mb-2">
+                <label for="storeId" class="form-label">Store</label>
+                <select name="storeId" class="form-control" required>
+                    <option value="">Select Store</option>
+                    {{#each store}}
+                    <option value="{{this._id}}">{{this.storeName}}</option>
+                    {{/each}}
+                </select>
+                <span class="text-danger" style="display: none;"></span> <!-- Error message -->
+            </div>
+            <div class="mb-3">
+                <label for="email" class="form-label">Email</label>
+                <input type="email" class="form-control" id="email" name="email" required>
+                <div id="emailError" class="error-message"></div>
+            </div>
+            <div class="mb-3 position-relative">
+                <label for="password" class="form-label">Password</label>
+                <input type="password" class="form-control" id="password" name="password" required>
+                <span class="eye-icon" onclick="togglePassword('password', 'eyeIcon1')">
+                    <i id="eyeIcon1" class="bi bi-eye-slash"></i>
+                </span>
+                <div id="passwordError" class="error-message"></div>
+            </div>
+            <button type="submit" class="btn btn-primary w-100">Login</button>
+        </form>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', async function (event) {
+            event.preventDefault(); // Prevent form submission
+
+            const storeId = document.querySelector('select[name="storeId"]').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            // Validate inputs
+            if (!storeId || !email || !password) {
+                document.getElementById('emailError').textContent = !email ? "Email is required" : "";
+                document.getElementById('passwordError').textContent = !password ? "Password is required" : "";
+                return;
+            }
+
+            // Submit the form via AJAX
+            try {
+                const response = await fetch("/auth/login", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ email, password, storeId }),
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    // Redirect to dashboard after successful login
+                    window.location.href = data.redirect;
+                } else {
+                    // Display server-side errors
+                    if (data.message === "Invalid email, password, or store") {
+                        document.getElementById('emailError').textContent = "Incorrect email or store";
+                        document.getElementById('passwordError').textContent = "Incorrect password";
+                    } else {
+                        alert(data.message); // Handle other errors
+                    }
+                }
+            } catch (error) {
+                console.error("Error during login:", error);
+                alert("An error occurred. Please try again.");
+            }
+        });
+
+        // Toggle password visibility
+        window.togglePassword = function (inputId, eyeIconId) {
+            const passwordField = document.getElementById(inputId);
+            const eyeIcon = document.getElementById(eyeIconId);
+
+            if (passwordField.type === "password") {
+                passwordField.type = "text";
+                eyeIcon.classList.remove("bi-eye-slash");
+                eyeIcon.classList.add("bi-eye");
+            } else {
+                passwordField.type = "password";
+                eyeIcon.classList.remove("bi-eye");
+                eyeIcon.classList.add("bi-eye-slash");
+            }
+        };
+
+        
+        // Function to set a cookie
+        function setCookie(name, value, days) {
+            const date = new Date();
+            date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+            const expires = "expires=" + date.toUTCString();
+            document.cookie = name + "=" + value + ";" + expires + ";path=/";
+        }
+
+        // Function to get a cookie
+        function getCookie(name) {
+            const cookieName = name + "=";
+            const decodedCookie = decodeURIComponent(document.cookie);
+            const cookieArray = decodedCookie.split(';');
+            for (let i = 0; i < cookieArray.length; i++) {
+                let cookie = cookieArray[i];
+                while (cookie.charAt(0) === ' ') {
+                    cookie = cookie.substring(1);
+                }
+                if (cookie.indexOf(cookieName) === 0) {
+                    return cookie.substring(cookieName.length, cookie.length);
+                }
+            }
+            return "";
+        }
+    </script>
+</body>
+
+</html>
+

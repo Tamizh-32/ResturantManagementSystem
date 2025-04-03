@@ -5,30 +5,34 @@
   <title>Edit Table Status</title>
   
   <link rel="stylesheet" href="/css/style.css">
+      <script src="/js/validation.js" defer></script>
 </head>
 <body>
+      {{> navbar}}
   {{> sidebar}}
   <div class="container  mb-3 col col-lg-6 border  border-effect" >
   <div class="container mt-2 mb-2">
      <div class="bg-secondary p-2 text-white ">
        <h5>Edit Status</h5>
     </div>
-    <form action="/tablestatus/{{tablestatus._id}}?_method=PUT" method="POST">
+    <form action="/tablestatus/{{tablestatus._id}}?_method=PUT" method="POST" class="needs-validation" novalidate>
       <div class="mb-2">
         <label for="statusName" class="form-label">Status Name</label>
         <input type="text" name="statusName" class="form-control" value="{{tablestatus.statusName}}" required>
+        <span class="text-danger" style="display: none;"></span> <!-- Error message -->
       </div>
 
- <div class="mb-2">
-  <label for="storeId" class="form-label">Store</label>
-  <select name="storeId" class="form-control" required>
-      {{#each stores}}
-      <option value="{{this._id}}" {{#if (eq this._id ../tablestatus.storeId)}}selected{{/if}}>
-        {{this.storeName}}
-      </option>
-    {{/each}}
-  </select>
-</div>
+ 
+  <div class="mb-2">
+          <label for="status" class="form-label">Status</label>
+          <select name="status" class="form-control" required>
+            <option value="">Select Status</option>
+            {{#each activeEnum}}
+              <option value="{{this}}" {{#if (eq this ../tablestatus.status)}}selected{{/if}}>{{this}}</option>
+            {{/each}}
+          </select>
+          <span class="text-danger" style="display: none;"></span> <!-- Error message -->
+        </div>
     <br>
       <button type="submit" class="btn btn-primary">Update Status</button>
       <a href="/tablestatus" class="btn btn-secondary">Cancel</a>

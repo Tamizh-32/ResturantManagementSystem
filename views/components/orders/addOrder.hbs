@@ -1,11 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css">
-  <title>Create Order</title>
+  <!-- jQuery -->
   <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-  
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css">
+  <!-- Choices.js CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css">
+  <!-- Your custom styles and scripts -->
   <link rel="stylesheet" href="/css/style.css">
+  <script src="/js/validation.js" defer></script>
+  <title>Create Order</title>
+
   <style>
     /* Overall container styling */
     .border-effect {
@@ -50,57 +56,62 @@
     .row {
       margin-bottom: 1.5rem;
     }
+
+
+
   </style>
 </head>
 <body>
+  {{> navbar}}
   {{> sidebar}}
   <div class="container mb-3 border-effect">
     <div class="bg-secondary p-2 text-white">
       <h5>Create Order</h5>
     </div>
-    <div class="container mt-2 mb-2">
-      <form action="/orders" method="POST">
-        <!-- Row for Order Section and Reporting Section -->
+    <div class="container mt-2 mb-1">
+      <form action="/orders" method="POST" class="needs-validation" novalidate>
         <div class="row">
-          <!-- Order Section -->
           <div class="col-12 col-md-9 mb-4">
-            <h6 class="mb-3">Order Section</h6>
-            <div class="row mb-3">
-              <div class="col-12 col-md-6 mb-2">
+     
+            <div class="row mb-1">
+              <div class="col-12 col-md-6 mb-1">
                 <label for="tableId" class="form-label">Table</label>
                 <select name="tableId" class="form-control" required>
+                  <option value="">Select Table</option>
                   {{#each tables}}
                     <option value="{{this._id}}">{{this.tableName}}</option>
                   {{/each}}
                 </select>
+                <span class="text-danger" style="display: none;"></span>
               </div>
               <div class="col-12 col-md-6">
                 <label for="customerName" class="form-label">Customer Name</label>
-                <input type="text" name="customerName" class="form-control">
+                <input type="text" name="customerName" class="form-control" required>
+                <span class="text-danger" style="display: none;"></span>
               </div>
             </div>
-            <div class="row mb-3">
+            <div class="row mb-1">
               <div class="col-12 col-md-6">
                 <label for="customerPhone" class="form-label">Phone</label>
-                <input type="text" name="customerPhone" class="form-control">
+                <input type="text" name="customerPhone" class="form-control" required>
+                <span class="text-danger" style="display: none;"></span>
               </div>
               <div class="col-12 col-md-6">
                 <label for="email" class="form-label">Email</label>
                 <input type="email" name="email" class="form-control">
               </div>
             </div>
-
-            <!-- Dynamic Product Rows -->
             <div id="productRows">
-              <div class="row mb-3 product-row">
+              <div class="row mb-1 product-row">
                 <div class="col-12 col-md-5 mb-2">
-                  <label for="productId" class="form-label">Product</label>
+                  <label for="productId" class="form-label">Item</label>
                   <select name="productId[]" class="form-control productId" required>
-                    <option value="">Select Product</option>
+                    <option value="">Select Item</option>
                     {{#each products}}
                       <option value="{{this._id}}" data-price="{{this.price}}">{{this.productName}}</option>
                     {{/each}}
                   </select>
+                  <span class="text-danger" style="display: none;"></span>
                 </div>
                 <div class="col-6 col-md-2 mb-2">
                   <label for="qty" class="form-label">Qty</label>
@@ -114,21 +125,19 @@
                   <label for="amount" class="form-label">Amount</label>
                   <input type="text" name="amount[]" class="form-control amount" readonly>
                 </div>
-                <div class="col-12 col-md-1 d-flex align-items-end">
+                <div class="col-12 col-md-1  align-items-end">
+                  <label for="amount" class="form-label">Add</label>
                   <button type="button" class="btn btn-primary add-row">+</button>
                 </div>
               </div>
             </div>
-
-              <div class="row mb-3">
+            <div class="row mb-3">
               <div class="col-12">
                 <label for="description" class="form-label">Description</label>
                 <textarea name="description" class="form-control"></textarea>
               </div>
             </div>
           </div>
-
-          <!-- Reporting Section -->
           <div class="col-12 col-md-3 border-start-md">
             <h6 class="mb-3">Reporting Section</h6>
             <div class="row mb-3">
@@ -155,9 +164,6 @@
                 <input type="text" name="netAmount" class="form-control" readonly>
               </div>
             </div>
-
-
-            <!-- Submit and Cancel Buttons -->
             <div class="row mt-4">
               <div class="col-12 text-center">
                 <button type="submit" class="btn btn-success">Create Order</button>
@@ -169,138 +175,109 @@
       </form>
     </div>
   </div>
+  <!-- Choices.js JS -->
+  <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+  <script>
+    $(document).ready(function() {
+      // Initialize Choices.js on the product dropdown
+      const productDropdowns = document.querySelectorAll('.productId');
+      productDropdowns.forEach((dropdown) => {
+        new Choices(dropdown, {
+          searchEnabled: true,
+          placeholder: true,
+          removeItemButton: true,
+        });
+      });
 
+      // Add new row functionality
+      $(document).on('click', '.add-row', function() {
+        const newRow = `
+          <div class="row mb-3 product-row">
+            <div class="col-12 col-md-5 mb-2">
+              <select name="productId[]" class="form-control productId">
+                <option value="">Select Product</option>
+                {{#each products}}
+                  <option value="{{this._id}}" data-price="{{this.price}}">{{this.productName}}</option>
+                {{/each}}
+              </select>
+            </div>
+            <div class="col-6 col-md-2 mb-2">
+              <input type="number" name="qty[]" class="form-control qty" value="1" min="1">
+            </div>
+            <div class="col-6 col-md-2 mb-2">
+              <input type="text" name="rate[]" class="form-control rate" readonly>
+            </div>
+            <div class="col-12 col-md-2">
+              <input type="text" name="amount[]" class="form-control amount" readonly>
+            </div>
+            <div class="col-12 col-md-1  align-items-end">
+              <button type="button" class="btn btn-danger remove-row">-</button>
+            </div>
+          </div>`;
+        $('#productRows').append(newRow);
 
+        // Initialize Choices.js on the new dropdown
+        const newDropdown = $('#productRows .productId').last()[0];
+        new Choices(newDropdown, {
+          searchEnabled: true,
+          placeholder: true,
+          removeItemButton: true,
+        });
+      });
 
-    <script>
+      // Remove row functionality
+      $(document).on('click', '.remove-row', function() {
+        $(this).closest('.product-row').remove();
+        updateGrossAmount();
+        updateNetAmount();
+      });
 
-    // Function to add a new product row
-    $(document).on('click', '.add-row', function() {
-      const newRow = `
-        <div class="row mb-3 product-row">
-          <div class="col-12 col-md-5 mb-2">
-            <select name="productId[]" class="form-control productId">
-              <option value="">Select Product</option>
-              {{#each products}}
-                <option value="{{this._id}}" data-price="{{this.price}}">{{this.productName}}</option>
-              {{/each}}
-            </select>
-          </div>
-          <div class="col-6 col-md-2 mb-2">
-            <input type="number" name="qty[]" class="form-control qty" value="1" min="1">
-          </div>
-          <div class="col-6 col-md-2 mb-2">
-            <input type="text" name="rate[]" class="form-control rate" readonly>
-          </div>
-          <div class="col-12 col-md-2">
-            <input type="text" name="amount[]" class="form-control amount" readonly>
-          </div>
-          <div class="col-12 col-md-1 d-flex align-items-end">
-            <button type="button" class="btn btn-danger remove-row">-</button>
-          </div>
-        </div>`;
-      $('#productRows').append(newRow);
+      // Update rate, amount, and gross amount when product or quantity changes
+      $(document).on('change', '.productId', function() {
+        const row = $(this).closest('.product-row');
+        const price = parseFloat($(this).find('option:selected').data('price')) || 0;
+        const qty = parseInt(row.find('.qty').val()) || 1;
+        const amount = price * qty;
+        row.find('.rate').val(price.toFixed(2));
+        row.find('.amount').val(amount.toFixed(2));
+        updateGrossAmount();
+        updateNetAmount();
+      });
+
+      $(document).on('input', '.qty', function() {
+        const row = $(this).closest('.product-row');
+        const price = parseFloat(row.find('.productId option:selected').data('price')) || 0;
+        const qty = parseInt($(this).val()) || 1;
+        const amount = price * qty;
+        row.find('.amount').val(amount.toFixed(2));
+        updateGrossAmount();
+        updateNetAmount();
+      });
+
+      // Function to update gross amount
+      function updateGrossAmount() {
+        let totalAmount = 0;
+        $('.amount').each(function() {
+          const amount = parseFloat($(this).val()) || 0;
+          totalAmount += amount;
+        });
+        $('[name="grossAmount"]').val(totalAmount.toFixed(2));
+      }
+
+      // Function to update net amount
+      function updateNetAmount() {
+        const grossAmount = parseFloat($('[name="grossAmount"]').val()) || 0;
+        const taxPercent = parseFloat($('[name="taxAmount"]').val()) || 0;
+        const discount = parseFloat($('[name="discount"]').val()) || 0;
+        const taxAmount = (taxPercent / 100) * grossAmount;
+        const totalBeforeDiscount = grossAmount + taxAmount;
+        const netAmount = totalBeforeDiscount - discount;
+        $('[name="netAmount"]').val(netAmount.toFixed(2));
+      }
+
+      // Attach event listeners to input fields
+      $(document).on('input', '[name="taxAmount"], [name="discount"], [name="grossAmount"]', updateNetAmount);
     });
-
-    // Function to remove a product row
-    $(document).on('click', '.remove-row', function() {
-      $(this).closest('.product-row').remove();
-    });
-
-
-
-
-
-// Function to update rate, amount, and gross amount immediately when product or quantity changes
-$(document).on('change', '.productId', function() {
-  const row = $(this).closest('.product-row');
-  const price = parseFloat($(this).find('option:selected').data('price')) || 0;  // Get the price from the selected option
-  const qty = parseInt(row.find('.qty').val()) || 1;  // Get the quantity value
-  const amount = price * qty;  // Calculate amount
-
-  // Update the rate and amount fields in the row
-  row.find('.rate').val(price.toFixed(2));  // Update the rate field
-  row.find('.amount').val(amount.toFixed(2));  // Update the amount field
-
-  // Update the gross amount
-  updateGrossAmount();
-  updateNetAmount();
-});
- 
-
-$(document).on('input', '.qty', function() {
-  const row = $(this).closest('.product-row');
-  const price = parseFloat(row.find('.productId option:selected').data('price')) || 0;  // Get the price from the selected product
-  const qty = parseInt($(this).val()) || 1;  // Get the quantity value
-  const amount = price * qty;  // Calculate the amount for the row
-  // Update the amount field in the row
-  row.find('.amount').val(amount.toFixed(2));  // Update the amount field
-  // Update the gross amount
-  updateGrossAmount();
-  updateNetAmount();
-}); 
-
-
-
-// Function to update the gross amount by summing all the individual amounts
-function updateGrossAmount() {
-  let totalAmount = 0;
-  // Loop through all the amount fields and calculate the total
-  $('.amount').each(function() {
-    const amount = parseFloat($(this).val()) || 0;  // Ensure it's a number, default to 0 if empty
-    totalAmount += amount;
-  });
-  // Update the grossAmount input field with the total
-  $('[name="grossAmount"]').val(totalAmount.toFixed(2));  // Format to 2 decimal places
-}
-
-// Function to remove a product row and update gross amount
-$(document).on('click', '.remove-row', function() {
-  const row = $(this).closest('.product-row');
-  const amountToRemove = parseFloat(row.find('.amount').val()) || 0;  // Get the amount of the row being removed
-  // Remove the product row
-  row.remove();
-  // Update the gross amount after removing the row
-  updateGrossAmount();
-  updateNetAmount();
-});
-
-
-// Function to update net amount dynamically
-function updateNetAmount() {
-  const grossAmount = parseFloat($('[name="grossAmount"]').val()) || 0;
-  const taxPercent = parseFloat($('[name="taxAmount"]').val()) || 0;
-  const discount = parseFloat($('[name="discount"]').val()) || 0;
-  const taxAmount = (taxPercent / 100) * grossAmount;
-  const totalBeforeDiscount = grossAmount + taxAmount;
-  const netAmount = totalBeforeDiscount - discount;
-  // Update the netAmount field
-  $('[name="netAmount"]').val(netAmount.toFixed(2));
-}
-// Attach event listeners to input fields
-$(document).on('input', '[name="taxAmount"], [name="discount"], [name="grossAmount"]', updateNetAmount);
-
   </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

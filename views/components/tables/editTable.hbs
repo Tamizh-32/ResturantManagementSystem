@@ -5,22 +5,26 @@
   <title>Edit Table</title>
   
   <link rel="stylesheet" href="/css/style.css">
+      <script src="/js/validation.js" defer></script>
 </head>
 <body>
+      {{> navbar}}
   {{> sidebar}}
   <div class="container  mb-3 col col-lg-6 border  border-effect" >
   <div class="container mt-2 mb-2">
      <div class="bg-secondary p-2 text-white ">
        <h5>Edit Table</h5>
-    </div>
-    <form action="/tables/{{table._id}}?_method=PUT" method="POST">
+    </div>   
+    <form action="/tables/{{table._id}}?_method=PUT" method="POST"class="needs-validation" novalidate>
       <div class="mb-2">
         <label for="tableName" class="form-label">Table Name</label>
         <input type="text" name="tableName" class="form-control" value="{{table.tableName}}" required>
+        <span class="text-danger" style="display: none;"></span> <!-- Error message -->
       </div>
        <div class="mb-2">
         <label for="capacity" class="form-label">Capacity</label>
         <input type="text" name="capacity" class="form-control" value="{{table.capacity}}" required>
+        <span class="text-danger" style="display: none;"></span> <!-- Error message -->
       </div>
      <div class="mb-2">
     <label for="tablestatusId" class="form-label">Table Status</label>
@@ -31,17 +35,19 @@
       </option>
       {{/each}}
     </select>
+    <span class="text-danger" style="display: none;"></span> <!-- Error message -->
 </div>
+ 
  <div class="mb-2">
-  <label for="storeId" class="form-label">Store</label>
-  <select name="storeId" class="form-control" required>
-      {{#each stores}}
-      <option value="{{this._id}}" {{#if (eq this._id ../table.storeId)}}selected{{/if}}>
-        {{this.storeName}}
-      </option>
-    {{/each}}
-  </select>
-</div>
+          <label for="status" class="form-label">Status</label>
+          <select name="status" class="form-control" required>
+            <option value="">Select Status</option>
+            {{#each activeEnum}}
+              <option value="{{this}}" {{#if (eq this ../table.status)}}selected{{/if}}>{{this}}</option>
+            {{/each}}
+          </select>
+          <span class="text-danger" style="display: none;"></span> <!-- Error message -->
+        </div>
     <br>
       <button type="submit" class="btn btn-primary">Update Store</button>
       <a href="/tables" class="btn btn-secondary">Cancel</a>

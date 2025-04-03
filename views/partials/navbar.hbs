@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+  <link rel="stylesheet" href="/css/style.css">
+
+<style>
+  /* Notification dropdown styles */
+  .notification-dropdown {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    width: 300px; /* Default width for desktop */
+    max-height: 400px;
+    overflow-y: auto;
+    background-color: white;
+
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    display: none;
+    z-index: 1000;
+  }
+
+  .notification-dropdown.open {
+    display: block;
+  }
+
+  .notification-item {
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+  }
+
+  .notification-item.unread {
+    background-color: #fff3cd;
+  }
+
+  .notification-item p {
+    margin: 0;
+    font-size: 14px; /* Default font size for desktop */
+  }
+
+  .notification-item small {
+    color: #666;
+    font-size: 12px; /* Default font size for desktop */
+  }
+
+  .mark-as-read {
+    background: none;
+    border: none;
+    color: #28a745;
+    cursor: pointer;
+    font-size: 12px; /* Default font size for desktop */
+  }
+
+  /* Notification icon container */
+  .notification-icon {
+    position: relative;
+    display: inline-block;
+  }
+
+  /* Bell icon */
+  .bi-bell {
+    font-size: 24px; /* Larger bell icon */
+    color: #ffffff; /* Light color for the bell */
+    cursor: pointer;
+  }
+
+  /* Smaller notification badge */
+  .badge {
+    font-size: 12px; /* Smaller font size */
+    padding: 3px 6px; /* Smaller padding */
+    border-radius: 50%; /* Circular shape */
+    background-color: #dc3545; /* Red background for the badge */
+    color: white; /* White text color */
+    position: absolute; /* Position it absolutely within the container */
+    top: -5px; /* Adjust position to top */
+    right: -5px; /* Adjust position to right */
+    z-index: 1; /* Ensure the badge is above the bell icon */
+    cursor: pointer;
+  }
+
+  /* Responsive styles for notification dropdown */
+  @media (max-width: 768px) {
+    .notification-dropdown {
+      width:250px; /* Full width for very small screens */
+      border-radius: 0; /* Remove border radius for full-width effect */
+      left: -180px; /* Align to the left edge */
+      margin: 0 auto; /* Center the dropdown */
+    }
+
+    .notification-item {
+      padding: 12px; /* Slightly larger padding for better spacing */
+    }
+
+    .notification-item p {
+      font-size: 16px; /* Larger font size for better readability */
+    }
+
+    .notification-item small {
+      font-size: 14px; /* Larger font size for better readability */
+    }
+
+    .mark-as-read {
+      font-size: 14px; /* Larger font size for better readability */
+    }
+  }
+   @media (max-width: 620px) {
+    .notification-dropdown {
+      width:250px; /* Full width for very small screens */
+      border-radius: 0; /* Remove border radius for full-width effect */
+    
+      left: -180px; /* Align to the left edge */
+      margin: 0 auto; /* Center the dropdown */
+    }
+
+
+  @media (max-width: 480px) {
+    .navbar-brand{
+      margin-top: -10px;
+    }
+    .notification-dropdown {
+      width:250px; /* Full width for very small screens */
+      border-radius: 0; /* Remove border radius for full-width effect */
+    
+      left: -180px; /* Align to the left edge */
+      margin: 0 auto; /* Center the dropdown */
+    }
+
+    .notification-item {
+      padding: 10px; /* Slightly smaller padding for very small screens */
+    }
+
+    .notification-item p {
+      font-size: 14px; /* Slightly smaller font size for very small screens */
+    }
+
+    .notification-item small {
+      font-size: 12px; /* Slightly smaller font size for very small screens */
+    }
+
+    .mark-as-read {
+      font-size: 12px; /* Slightly smaller font size for very small screens */
+    }
+  }
+</style>
+
+</head>
+
+<body>
+
+  <input type="hidden" id="storeId" value="{{storeId}}">
+
+  <nav class="navbar navbar-expand-lg bg-dark fixed-top">
+    <div class="container-fluid">
+      <li style="margin-top: -15px;" id="sidebarToggle" style="cursor: pointer;">☰</li>
+       <a class="navbar-brand" href="/">
+        <img src="{{companyInfo.logo}}" height="50" alt="Logo" loading="lazy">
+      </a>
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item">
+          <div class="d-flex align-items-center gap-3">
+            <div class="notification-icon">
+              <i class="bi bi-bell" id="notificationBell"></i>
+              <span class="badge bg-danger" id="notificationBadge" style="display: none;">0</span>
+              <!-- Notification dropdown -->
+              <div class="notification-dropdown" id="notificationDropdown">
+                <div id="notificationList">
+                  <!-- Notifications will be dynamically loaded here -->
+                </div>
+              </div>
+            </div>
+            <a href="/profile">
+              <i class="bi bi-person-circle text-light" style="font-size: 26px;"></i>
+            </a>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </nav>
+
+  <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+ <script>
+  const storeId = document.getElementById('storeId').value;
+
+  // Function to update the notification badge
+  function updateNotificationBadge(count) {
+    const badge = document.getElementById('notificationBadge');
+    const bellIcon = document.getElementById('notificationBell');
+    if (count > 0) {
+      badge.style.display = 'inline';
+      badge.textContent = count;
+      bellIcon.style.color = '#ffcc00'; // Highlight the bell icon
+    } else {
+      badge.style.display = 'none';
+      bellIcon.style.color = '#ffffff'; // Reset the bell icon color
+    }
+  }
+
+ function renderNotifications(notifications) {
+    const notificationList = document.getElementById('notificationList');
+    notificationList.innerHTML = notifications.map(notification => `
+        <div class="notification-item ${notification.status === 'unread' ? 'unread' : ''}">
+            <p>${notification.message}</p>
+            <small>OrderId: ${notification.orderId || 'N/A'}</small><br>
+            <small>Customer: ${notification.customerName || 'Unknown'}</small><br>
+            <button class="mark-as-read" data-notification-id="${notification._id}">Mark as Read</button>
+        </div>
+    `).join('');
+
+    // Update the notification badge count
+    updateNotificationBadge(notifications.length);
+}
+
+  function fetchNotifications() {
+    fetch(`/notifications?storeId=${storeId}`)
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          renderNotifications(data.notifications);
+        }
+      })
+      .catch(error => console.error('Error fetching notifications:', error));
+  }
+
+  // Toggle notification dropdown
+  document.getElementById('notificationBell').addEventListener('click', function () {
+    const dropdown = document.getElementById('notificationDropdown');
+    dropdown.classList.toggle('open');
+    if (dropdown.classList.contains('open')) {
+      fetchNotifications(); // Fetch notifications when dropdown is opened
+    }
+  });
+
+  // Toggle notification dropdown
+  document.getElementById('notificationBadge').addEventListener('click', function () {
+    const dropdown = document.getElementById('notificationDropdown');
+    dropdown.classList.toggle('open');
+    if (dropdown.classList.contains('open')) {
+      fetchNotifications(); // Fetch notifications when dropdown is opened
+    }
+  });
+
+  // Mark notification as read
+  $(document).on('click', '.mark-as-read', function () {
+    const notificationId = $(this).data('notification-id');
+    const notificationItem = $(this).closest('.notification-item'); // Get the notification item
+
+    $.ajax({
+      url: `/notifications/${notificationId}/read`,
+      method: 'PUT',
+      success: function (response) {
+        if (response.success) {
+          // Remove the notification item from the list
+          notificationItem.remove();
+
+          // Fetch and update the notification count
+          fetchNotifications();
+        }
+      },
+      error: function (error) {
+        console.error('Error marking notification as read:', error);
+      }
+    });
+  });
+
+  // Poll for notifications every 10 seconds
+  setInterval(fetchNotifications, 10000);
+
+  // Initial fetch
+  fetchNotifications();
+</script>
+
+</body>
+
+</html>

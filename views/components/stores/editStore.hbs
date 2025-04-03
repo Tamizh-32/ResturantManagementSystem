@@ -5,27 +5,32 @@
   <title>Edit Store</title>
   
   <link rel="stylesheet" href="/css/style.css">
+      <script src="/js/validation.js" defer></script>
 </head>
 <body>
+      {{> navbar}}
   {{> sidebar}}
   <div class="container  mb-3 col col-lg-6 border  border-effect" >
   <div class="container mt-2 mb-2">
      <div class="bg-secondary p-2 text-white ">
        <h5>Edit Store</h5>
     </div>
-    <form action="/stores/{{store._id}}?_method=PUT" method="POST">
+    <form action="/stores/{{store._id}}?_method=PUT" method="POST" class="needs-validation" novalidate>
       <div class="mb-2">
         <label for="storeName" class="form-label">Store Name</label>
         <input type="text" name="storeName" class="form-control" value="{{store.storeName}}" required>
+        <span class="text-danger" style="display: none;"></span> <!-- Error message -->
       </div>
-
-<div class="mb-2">
-  <label for="status" class="form-label">Status</label>
-  <select name="status" class="form-control" required>
-    <option value="active" {{#if (eq store.status "active")}}selected{{/if}}>Active</option>
-    <option value="inactive" {{#if (eq store.status "inactive")}}selected{{/if}}>Inactive</option>
-  </select>
-</div>
+            <div class="mb-2">
+          <label for="status" class="form-label">Status</label>
+          <select name="status" class="form-control" required>
+            <option value="">Select Status</option>
+            {{#each activeEnum}}
+              <option value="{{this}}" {{#if (eq this ../store.status)}}selected{{/if}}>{{this}}</option>
+            {{/each}}
+          </select>
+          <span class="text-danger" style="display: none;"></span> <!-- Error message -->
+        </div>
 
           <br>
    

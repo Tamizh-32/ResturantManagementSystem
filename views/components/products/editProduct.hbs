@@ -5,23 +5,27 @@
   <title>Edit Menu</title>
   
   <link rel="stylesheet" href="/css/style.css">
+      <script src="/js/validation.js" defer></script>
 </head>
 <body>
+      {{> navbar}}
   {{> sidebar}}
   <div class="container mb-3 col-lg-8 border border-effect p-4">
     <div class="bg-secondary p-2 text-white">
       <h5>Edit Product</h5>
     </div>
     <div class="container mt-3">
-      <form action="/products/{{product._id}}?_method=PUT" method="POST" enctype="multipart/form-data">
+      <form action="/products/{{product._id}}?_method=PUT" method="POST" enctype="multipart/form-data" class="needs-validation" novalidate enctype="multipart/form-data">
         <div class="row mb-2">
           <div class="col-md-6">
             <label for="productName" class="form-label">Menu Name</label>
             <input type="text" name="productName" class="form-control" value="{{product.productName}}" required>
+              <span class="text-danger" style="display: none;"></span> <!-- Error message -->
           </div>
           <div class="col-md-6">
             <label for="price" class="form-label">Price</label>
             <input type="text" name="price" class="form-control" value="{{product.price}}" required>
+              <span class="text-danger" style="display: none;"></span> <!-- Error message -->
           </div>
         </div>
         
@@ -33,6 +37,8 @@
             <label for="image" class="form-label">Upload New Image (optional)</label>
             <input type="file" name="image" class="form-control">
           </div>
+
+          
           <div class="col-md-6">
             <label for="categoryId" class="form-label">Category</label>
             <select name="categoryId" class="form-control" required>
@@ -42,27 +48,23 @@
                 </option>
               {{/each}}
             </select>
+               <span class="text-danger" style="display: none;"></span> <!-- Error message -->
           </div>
         </div>
 
         <div class="row mb-2">
-          <div class="col-md-6">
-            <label for="storeId" class="form-label">Store</label>
-            <select name="storeId" class="form-control" required>
-              {{#each stores}}
-                <option value="{{this._id}}" {{#if (eq this._id ../product.storeId)}}selected{{/if}}>
-                  {{this.storeName}}
-                </option>
-              {{/each}}
-            </select>
-          </div>
-          <div class="col-md-6">
-            <label for="status" class="form-label">Status</label>
-            <select name="status" class="form-control" required>
-              <option value="active" {{#if (eq product.status "active")}}selected{{/if}}>Active</option>
-              <option value="inactive" {{#if (eq product.status "inactive")}}selected{{/if}}>Inactive</option>
-            </select>
-          </div>
+ 
+
+ <div class="col md-6">
+          <label for="status" class="form-label">Status</label>
+          <select name="status" class="form-control" required>
+            <option value="">Select Status</option>
+            {{#each activeEnum}}
+              <option value="{{this}}" {{#if (eq this ../product.status)}}selected{{/if}}>{{this}}</option>
+            {{/each}}
+          </select>
+          <span class="text-danger" style="display: none;"></span> <!-- Error message -->
+        </div>
         </div>
 
         <div class="row mb-2">

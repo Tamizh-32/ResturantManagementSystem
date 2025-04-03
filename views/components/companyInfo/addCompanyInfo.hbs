@@ -5,49 +5,89 @@
   <title>Add Company</title>
   
   <link rel="stylesheet" href="/css/style.css">
+      <script src="/js/validation.js" defer></script>
 </head>
 <body>
+      {{> navbar}}
   {{> sidebar}}
-  <div class="container mb-5 col-lg-8 border border-effect p-4">
+  <div class="container mb-5 col-lg-8 border border-effect p-4" >
     <div class="bg-secondary p-2 text-white">
       <h5>Add Company</h5>
     </div>
     <div class="container mt-3">
-      <form action="/companyinfo" method="POST">
+      <form action="/companyinfo" method="POST" enctype="multipart/form-data" class="needs-validation" novalidate>
         <div class="row mb-2">
           <div class="col-md-6">
             <label for="companyName" class="form-label">Company Name</label>
             <input type="text" name="companyName" class="form-control" required>
+             <span class="text-danger" style="display: none;"></span> <!-- Error message -->
           </div>
           <div class="col-md-6">
             <label for="companyCode" class="form-label">Company Code</label>
             <input type="text" name="companyCode" class="form-control" required>
+             <span class="text-danger" style="display: none;"></span> <!-- Error message -->
           </div>
         </div>
-        
-     
-        
+           <div class="row mb-2">
+        <div class="col-md-6">
+            <label for="logo" class="form-label">Company Logo</label>
+            <input type="file" name="logo" class="form-control" required>
+             <span class="text-danger" style="display: none;"></span> <!-- Error message -->
+          </div>
+            <div class="col-md-6">
+          <label for="storeId" class="form-label">Store </label>
+          <select name="storeId" class="form-control" required>
+            <option value="">Select Store</option>
+            {{#each stores}}
+              <option value="{{this._id}}">{{this.storeName}}</option>
+            {{/each}}
+          </select>
+          <span class="text-danger" style="display: none;"></span> <!-- Error message -->
+        </div>
+        </div>
         <div class="row mb-2">
           <div class="col-md-6">
             <label for="email" class="form-label">Email</label>
             <input type="email" name="email" class="form-control" required>
+             <span class="text-danger" style="display: none;"></span> <!-- Error message -->
           </div>
           <div class="col-md-6">
             <label for="contact" class="form-label">Contact</label>
             <input type="text" name="contact" class="form-control" required>
+             <span class="text-danger" style="display: none;"></span> <!-- Error message -->
           </div>
         </div>
           <div class="row mb-2">
           <div class="col-md-6">
-            <label for="address" class="form-label">Address</label>
-            <textarea name="address" class="form-control" required></textarea>
+            <label for="street" class="form-label">Street</label>
+            <input  type="text" name="street" class="form-control" required>
+             <span class="text-danger" style="display: none;"></span> <!-- Error message -->
           </div>
           <div class="col-md-6">
+            <label for="City" class="form-label">City</label>
+            <input  type="text" name="city" class="form-control" required>
+             <span class="text-danger" style="display: none;"></span> <!-- Error message -->
+          </div>
+         
+        </div>
+         <div class="row mb-2">
+          <div class="col-md-6">
+            <label for="state" class="form-label">State</label>
+            <input  type="state" name="state" class="form-control" required>
+             <span class="text-danger" style="display: none;"></span> <!-- Error message -->
+          </div>
+              <div class="col-md-6">
+            <label for="zip" class="form-label">Zip</label>
+            <input  type="text" name="zip" class="form-control" required>
+             <span class="text-danger" style="display: none;"></span> <!-- Error message -->
+          </div>
+         
+        </div>
+
+          <div class="col-md-12">
             <label for="description" class="form-label">Description</label>
             <textarea name="description" class="form-control" required></textarea>
           </div>
-        </div>
-
    <div class="row mb-2">
           <div class="col-md-6">
             <label for="chargeAmount" class="form-label">Charge Amount</label>
@@ -59,15 +99,21 @@
           </div>
         </div>
       
-        
+           <div class="mb-2">
+        <label for="gstno" class="form-label">GST NO</label>
+        <input type="text" name="gstno" class="form-control" required>
+        <span class="text-danger" style="display: none;"></span> <!-- Error message -->
+      </div>
         
         <div class="mb-2">
           <label for="status" class="form-label">Status</label>
           <select name="status" class="form-control" required>
-              <option value="">Select</option>
-            <option value="active">Active</option>
-            <option value="inactive">Inactive</option>
+            <option value="">Select Status</option>
+            {{#each activeEnum}}
+              <option value="{{this}}">{{this}}</option>
+            {{/each}}
           </select>
+          <span class="text-danger" style="display: none;"></span> <!-- Error message -->
         </div>
         
         <br>
